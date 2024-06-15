@@ -1,47 +1,57 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="container mt-5">
+    <h1 class="mb-4">Calculadora Aritmética</h1>
+    <InputFields :num1="num1" :num2="num2" @update:num1="num1 = $event" @update:num2="num2 = $event" />
+    <SelectOperation :operation="operation" @update:operation="operation = $event" />
+    <ResultDisplay :result="result" />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script setup>
+import { reactive, computed } from 'vue';
+import InputFields from './components/InputFields.vue';
+import SelectOperation from './components/SelectOperation.vue';
+import ResultDisplay from './components/ResultDisplay.vue';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+const state = reactive({
+  num1: 0,
+  num2: 0,
+  operation: '+'
+});
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+const result = computed(() => {
+  switch (state.operation) {
+    case '+':
+      return state.num1 + state.num2;
+    case '-':
+      return state.num1 - state.num2;
+    case '*':
+      return state.num1 * state.num2;
+    case '/':
+      return state.num2 !== 0 ? state.num1 / state.num2 : 'Erro: Divisão por zero';
+    default:
+      return 0;
   }
+});
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+const num1 = computed({
+  get: () => state.num1,
+  set: (value) => state.num1 = value
+});
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+const num2 = computed({
+  get: () => state.num2,
+  set: (value) => state.num2 = value
+});
+
+const operation = computed({
+  get: () => state.operation,
+  set: (value) => state.operation = value
+});
+</script>
+
+<style>
+body {
+  background-color: #f8f9fa;
 }
 </style>
